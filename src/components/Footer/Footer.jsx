@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Footer.css';
 
 const WhatsAppIcon = () => (
@@ -14,19 +14,40 @@ const WhatsAppIcon = () => (
 );
 
 const Footer = () => {
+  const [dateTime, setDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDateTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatDateTime = () => {
+    const weekdays = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+    const dayOfWeek = weekdays[dateTime.getDay()];
+    const dateStr = dateTime.toLocaleDateString('pt-BR');
+    const timeStr = dateTime.toLocaleTimeString('pt-BR');
+    return `${dayOfWeek}, ${dateStr} - ${timeStr}`;
+  };
+
   return (
     <footer className="global-footer no-print">
       <div className="footer-content">
-        <span>Criado por Leandro Yata</span>
-        <a
-          href="https://wa.me/5575991902534"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Falar no WhatsApp"
-          className="footer-whatsapp-link"
-        >
-          <WhatsAppIcon />
-        </a>
+        <div className="footer-left">
+          <span>Criado por Leandro Yata</span>
+          <a
+            href="https://wa.me/5575991902534"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Falar no WhatsApp"
+            className="footer-whatsapp-link"
+          >
+            <WhatsAppIcon />
+          </a>
+        </div>
+        <span className="footer-divider">|</span>
+        <span className="footer-datetime">{formatDateTime()}</span>
       </div>
     </footer>
   );
