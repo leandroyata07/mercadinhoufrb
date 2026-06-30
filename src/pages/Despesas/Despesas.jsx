@@ -10,6 +10,7 @@ const Despesas = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterStatus, setFilterStatus] = useState('todas'); 
+  const [columnFilters, setColumnFilters] = useState({});
 
   
   const [showModal, setShowModal] = useState(false);
@@ -55,11 +56,14 @@ const Despesas = () => {
     const matchesSearch = d.descricao.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory ? d.categoria === filterCategory : true;
     
+    const matchesColDesc = !columnFilters.desc || d.descricao.toLowerCase().includes(columnFilters.desc.toLowerCase());
+    const matchesColCat = !columnFilters.cat || d.categoria.toLowerCase().includes(columnFilters.cat.toLowerCase());
+
     let matchesStatus = true;
     if (filterStatus === 'pagas') matchesStatus = d.pago;
     else if (filterStatus === 'pendentes') matchesStatus = !d.pago;
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesCategory && matchesStatus && matchesColDesc && matchesColCat;
   });
 
   const formatCurrency = (val) => {
@@ -278,8 +282,32 @@ const Despesas = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Descrição / Conta</th>
-                <th>Categoria</th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Descrição / Conta</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.desc || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, desc: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Categoria</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.cat || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, cat: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
                 <th>Valor</th>
                 <th>Vencimento</th>
                 <th>Status</th>

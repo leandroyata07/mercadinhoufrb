@@ -6,9 +6,14 @@ import './Financeiro.css';
 const Financeiro = () => {
   const { vendas, financeiro, quitarFiado, despesas } = useDatabase();
   const [activeTab, setActiveTab] = useState('caixa'); 
+  const [columnFilters, setColumnFilters] = useState({});
 
   
-  const fiadosAtivos = vendas.filter((v) => v.formaPagamento === 'fiado' && !v.pago);
+  const allFiadosAtivos = vendas.filter((v) => v.formaPagamento === 'fiado' && !v.pago);
+  const fiadosAtivos = allFiadosAtivos.filter((v) => {
+    const matchesColCliente = !columnFilters.cliente || v.clienteNome.toLowerCase().includes(columnFilters.cliente.toLowerCase());
+    return matchesColCliente;
+  });
 
   
   const totalEntradas = financeiro
@@ -21,7 +26,12 @@ const Financeiro = () => {
 
   const caixaAtual = totalEntradas - totalSaidas;
 
-  const totalFiados = fiadosAtivos.reduce((sum, item) => sum + item.valorTotal, 0);
+  const totalFiados = allFiadosAtivos.reduce((sum, item) => sum + item.valorTotal, 0);
+
+  const filteredTransactions = financeiro.filter((f) => {
+    const matchesColDesc = !columnFilters.desc || f.descricao.toLowerCase().includes(columnFilters.desc.toLowerCase());
+    return matchesColDesc;
+  });
 
   const formatCurrency = (val) => {
     return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -139,13 +149,25 @@ const Financeiro = () => {
             <thead>
               <tr>
                 <th>Data</th>
-                <th>Descrição / Origem</th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Descrição / Origem</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.desc || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, desc: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
                 <th>Tipo</th>
                 <th>Valor</th>
               </tr>
             </thead>
             <tbody>
-              {financeiro.map((f) => (
+              {filteredTransactions.map((f) => (
                 <tr key={f.id}>
                   <td>{new Date(f.data).toLocaleString('pt-BR')}</td>
                   <td className="font-bold">{f.descricao}</td>
@@ -171,7 +193,19 @@ const Financeiro = () => {
             <thead>
               <tr>
                 <th>Cód. Venda</th>
-                <th>Cliente</th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Cliente</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.cliente || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, cliente: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
                 <th>Data da Venda</th>
                 <th>Itens da Venda</th>
                 <th>Total Devido</th>

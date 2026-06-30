@@ -14,6 +14,12 @@ const Compras = () => {
   const [itensCompra, setItensCompra] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [columnFilters, setColumnFilters] = useState({});
+
+  const filteredCompras = compras.filter((c) => {
+    const matchesColForn = !columnFilters.forn || c.fornecedorNome.toLowerCase().includes(columnFilters.forn.toLowerCase());
+    return matchesColForn;
+  });
 
   
   const [showQuickProductModal, setShowQuickProductModal] = useState(false);
@@ -482,7 +488,19 @@ const Compras = () => {
             <thead>
               <tr>
                 <th>Cód. Compra</th>
-                <th>Fornecedor</th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Fornecedor</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.forn || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, forn: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
                 <th>Data</th>
                 <th>Itens Adquiridos</th>
                 <th>Total da Nota</th>
@@ -490,12 +508,12 @@ const Compras = () => {
               </tr>
             </thead>
             <tbody>
-              {compras.length === 0 ? (
+              {filteredCompras.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center no-data-msg">Nenhuma compra registrada ainda.</td>
+                  <td colSpan="6" className="text-center no-data-msg">Nenhuma compra encontrada para os filtros.</td>
                 </tr>
               ) : (
-                compras.map((c) => (
+                filteredCompras.map((c) => (
                   <tr key={c.id}>
                     <td className="font-bold">{c.id}</td>
                     <td>{c.fornecedorNome}</td>

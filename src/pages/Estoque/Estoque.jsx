@@ -8,6 +8,7 @@ const Estoque = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterLowStock, setFilterLowStock] = useState(false);
+  const [columnFilters, setColumnFilters] = useState({});
 
   
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -49,10 +50,16 @@ const Estoque = () => {
       p.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.marca.toLowerCase().includes(searchTerm.toLowerCase());
     
-    if (filterLowStock) {
-      return matchesSearch && (p.estoque || 0) <= 5;
-    }
-    return matchesSearch;
+    const matchesColNome = !columnFilters.nome || p.nome.toLowerCase().includes(columnFilters.nome.toLowerCase());
+    const matchesColMarca = !columnFilters.marca || p.marca.toLowerCase().includes(columnFilters.marca.toLowerCase());
+    
+    const forn = fornecedores.find((f) => f.id === p.fornecedorId);
+    const fornNome = forn ? forn.nome : '';
+    const matchesColForn = !columnFilters.forn || fornNome.toLowerCase().includes(columnFilters.forn.toLowerCase());
+    
+    const matchesLowStock = !filterLowStock || (p.estoque || 0) <= 5;
+
+    return matchesSearch && matchesLowStock && matchesColNome && matchesColMarca && matchesColForn;
   });
 
   const formatCurrency = (val) => {
@@ -183,9 +190,45 @@ const Estoque = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Produto</th>
-                <th>Marca</th>
-                <th>Fornecedor</th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Produto</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.nome || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, nome: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Marca</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.marca || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, marca: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
+                <th>
+                  <div className="header-cell-content">
+                    <span>Fornecedor</span>
+                    <input
+                      type="text"
+                      placeholder="Filtrar..."
+                      className="header-filter-input"
+                      value={columnFilters.forn || ''}
+                      onChange={(e) => setColumnFilters({ ...columnFilters, forn: e.target.value })}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </th>
                 <th>Qtd em Estoque</th>
                 <th>Status</th>
                 <th>Preço Unitário</th>
