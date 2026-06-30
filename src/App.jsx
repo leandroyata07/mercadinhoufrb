@@ -24,33 +24,110 @@ import NotFound from './pages/NotFound/NotFound';
 import './App.css';
 
 
-const ProtectedLayout = ({ children }) => {
+const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/" replace />;
+};
 
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  return !isAuthenticated ? children : <Navigate to="/dashboard" replace />;
+};
+
+const AppContent = () => {
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="app-container">
-      <Header />
-      <main>
-        {children}
+      {isAuthenticated && <Header />}
+      <main style={{ padding: isAuthenticated ? '40px 0' : '0' }}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vendas"
+            element={
+              <ProtectedRoute>
+                <Vendas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cadastros"
+            element={
+              <ProtectedRoute>
+                <Cadastros />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/compras"
+            element={
+              <ProtectedRoute>
+                <Compras />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/estoque"
+            element={
+              <ProtectedRoute>
+                <Estoque />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/despesas"
+            element={
+              <ProtectedRoute>
+                <Despesas />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/financeiro"
+            element={
+              <ProtectedRoute>
+                <Financeiro />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/relatorios"
+            element={
+              <ProtectedRoute>
+                <Relatorios />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/configuracoes"
+            element={
+              <ProtectedRoute>
+                <Configuracoes />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </main>
       <Footer />
     </div>
   );
-};
-
-
-const PublicRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return children;
 };
 
 function App() {
@@ -59,94 +136,7 @@ function App() {
       <DatabaseProvider>
         <ThemeProvider>
           <Router basename={import.meta.env.BASE_URL}>
-            <Routes>
-              {}
-              <Route
-                path="/"
-                element={
-                  <PublicRoute>
-                    <Login />
-                  </PublicRoute>
-                }
-              />
-
-              {}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedLayout>
-                    <Dashboard />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/vendas"
-                element={
-                  <ProtectedLayout>
-                    <Vendas />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/cadastros"
-                element={
-                  <ProtectedLayout>
-                    <Cadastros />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/compras"
-                element={
-                  <ProtectedLayout>
-                    <Compras />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/estoque"
-                element={
-                  <ProtectedLayout>
-                    <Estoque />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/despesas"
-                element={
-                  <ProtectedLayout>
-                    <Despesas />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/financeiro"
-                element={
-                  <ProtectedLayout>
-                    <Financeiro />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/relatorios"
-                element={
-                  <ProtectedLayout>
-                    <Relatorios />
-                  </ProtectedLayout>
-                }
-              />
-              <Route
-                path="/configuracoes"
-                element={
-                  <ProtectedLayout>
-                    <Configuracoes />
-                  </ProtectedLayout>
-                }
-              />
-
-              {}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AppContent />
           </Router>
         </ThemeProvider>
       </DatabaseProvider>
