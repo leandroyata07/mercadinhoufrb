@@ -876,14 +876,10 @@ const Vendas = () => {
         </div>
       )}
 
-      {}
       {showSuccessCheckoutModal && completedSale && (
         <div className="modal-overlay" style={{ zIndex: 500 }}>
           <div className="modal-content text-center" style={{ maxWidth: '440px', width: '90%', padding: '24px 20px', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 className="form-title text-success" style={{ marginBottom: '4px' }}>Venda Concluída!</h3>
-            <p className="text-secondary" style={{ fontSize: '13px', marginBottom: '16px', lineHeight: '1.4' }}>
-              A transação foi registrada e o estoque atualizado. Veja o cupom de venda abaixo:
-            </p>
+            <h3 className="form-title text-success" style={{ marginBottom: '16px', textAlign: 'center', textTransform: 'uppercase' }}>VENDA CONCLUÍDA!</h3>
 
             {}
             <div className="thermal-ticket" id="thermal-print-area">
@@ -959,7 +955,7 @@ const Vendas = () => {
             <div className="modal-actions-btns" style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
               <button
                 type="button"
-                className="btn btn-secondary w-full"
+                className="btn btn-primary w-full"
                 onClick={() => window.print()}
                 style={{ padding: '10px', fontWeight: '700' }}
               >
@@ -968,14 +964,14 @@ const Vendas = () => {
               <button
                 id="success-checkout-ok-btn"
                 type="button"
-                className="btn btn-success w-full"
+                className="btn btn-danger w-full"
                 onClick={() => {
                   setShowSuccessCheckoutModal(false);
                   setCompletedSale(null);
                 }}
                 style={{ padding: '10px', fontWeight: '700' }}
               >
-                Confirmar (Enter / ESC)
+                Sair (Enter / ESC)
               </button>
             </div>
           </div>
