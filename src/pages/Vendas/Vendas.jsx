@@ -16,14 +16,36 @@ const Vendas = () => {
   const { produtos, clientes, addCliente, registrarVenda, vendas } = useDatabase();
 
   
-  const [carrinho, setCarrinho] = useState([]);
+  const [carrinho, setCarrinho] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mercadinho_carrinho');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedClienteId, setSelectedClienteId] = useState('default');
-  const [formaPagamento, setFormaPagamento] = useState('dinheiro');
-  const [numParcelas, setNumParcelas] = useState(1);
+  const [selectedClienteId, setSelectedClienteId] = useState(() => {
+    return localStorage.getItem('mercadinho_selectedClienteId') || 'default';
+  });
+  const [formaPagamento, setFormaPagamento] = useState(() => {
+    return localStorage.getItem('mercadinho_formaPagamento') || 'dinheiro';
+  });
+  const [numParcelas, setNumParcelas] = useState(() => {
+    const saved = localStorage.getItem('mercadinho_numParcelas');
+    return saved ? parseInt(saved, 10) : 1;
+  });
   const [clientSearchQuery, setClientSearchQuery] = useState('');
   const [showClientResults, setShowClientResults] = useState(false);
-  const [caixaStatus, setCaixaStatus] = useState('livre');
+  const [caixaStatus, setCaixaStatus] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mercadinho_carrinho');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return parsed.length > 0 ? 'aberto' : 'livre';
+    } catch {
+      return 'livre';
+    }
+  });
 
   
   const [showQuickClientModal, setShowQuickClientModal] = useState(false);
@@ -54,6 +76,22 @@ const Vendas = () => {
   const [saleFilterEnd, setSaleFilterEnd] = useState('');
   const [saleFilterMinVal, setSaleFilterMinVal] = useState('');
   const [saleFilterMaxVal, setSaleFilterMaxVal] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('mercadinho_carrinho', JSON.stringify(carrinho));
+  }, [carrinho]);
+
+  useEffect(() => {
+    localStorage.setItem('mercadinho_selectedClienteId', selectedClienteId);
+  }, [selectedClienteId]);
+
+  useEffect(() => {
+    localStorage.setItem('mercadinho_formaPagamento', formaPagamento);
+  }, [formaPagamento]);
+
+  useEffect(() => {
+    localStorage.setItem('mercadinho_numParcelas', numParcelas.toString());
+  }, [numParcelas]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {

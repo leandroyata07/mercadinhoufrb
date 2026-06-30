@@ -68,12 +68,50 @@ const Header = () => {
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
+  const handleNavClick = (e, path) => {
+    if (location.pathname === '/vendas' && path !== '/vendas') {
+      const savedCart = localStorage.getItem('mercadinho_carrinho');
+      if (savedCart) {
+        const cartItems = JSON.parse(savedCart);
+        if (cartItems && cartItems.length > 0) {
+          const confirmLeave = window.confirm(
+            'Você possui itens no carrinho de vendas em aberto. Deseja mesmo mudar de página? (O carrinho continuará salvo)'
+          );
+          if (!confirmLeave) {
+            e.preventDefault();
+            return;
+          }
+        }
+      }
+    }
+    closeMobileMenu();
+  };
+
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/vendas') {
+      const savedCart = localStorage.getItem('mercadinho_carrinho');
+      if (savedCart) {
+        const cartItems = JSON.parse(savedCart);
+        if (cartItems && cartItems.length > 0) {
+          const confirmLeave = window.confirm(
+            'Você possui itens no carrinho de vendas em aberto. Deseja mesmo mudar de página? (O carrinho continuará salvo)'
+          );
+          if (!confirmLeave) {
+            e.preventDefault();
+            return;
+          }
+        }
+      }
+    }
+    closeMobileMenu();
+  };
+
   const unreadCount = (notifications || []).filter(n => !n.lida).length;
 
   return (
     <header className="main-header no-print">
       <div className="container header-container">
-        <Link to="/dashboard" className="logo-container" onClick={closeMobileMenu}>
+        <Link to="/dashboard" className="logo-container" onClick={handleLogoClick}>
           <Store className="logo-icon" size={24} />
           <div className="logo-text-wrapper">
             <span className="logo-text-top">Mercadinho</span>
@@ -95,6 +133,7 @@ const Header = () => {
                 to={item.path}
                 className={`nav-link ${isActive ? 'active' : ''}`}
                 style={linkStyle}
+                onClick={(e) => handleNavClick(e, item.path)}
               >
                 <Icon size={16} style={{ color: item.activeColor }} />
                 <span>{item.label}</span>
@@ -240,7 +279,7 @@ const Header = () => {
                   key={item.path}
                   to={item.path}
                   className={`mobile-nav-link ${isActive ? 'active' : ''}`}
-                  onClick={closeMobileMenu}
+                  onClick={(e) => handleNavClick(e, item.path)}
                   style={linkStyle}
                 >
                   <Icon size={20} style={{ color: item.activeColor }} />
