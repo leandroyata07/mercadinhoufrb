@@ -107,6 +107,12 @@ export const DatabaseProvider = ({ children }) => {
     return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
   });
 
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type, id: Date.now() });
+  };
+
   useEffect(() => {
     localStorage.setItem('mercadinho_settings', JSON.stringify(settings));
   }, [settings]);
@@ -262,27 +268,33 @@ export const DatabaseProvider = ({ children }) => {
   const addCliente = (cliente) => {
     const newCliente = { ...cliente, id: `cli-${Date.now()}` };
     setClientes((prev) => [...prev, newCliente]);
+    showToast('Cliente cadastrado com sucesso!', 'success');
     return newCliente;
   };
   const updateCliente = (id, updated) => {
     setClientes((prev) => prev.map((c) => (c.id === id ? { ...c, ...updated } : c)));
+    showToast('Cliente atualizado com sucesso!', 'success');
   };
   const deleteCliente = (id) => {
     if (id === 'default') return; 
     setClientes((prev) => prev.filter((c) => c.id !== id));
+    showToast('Cliente excluído com sucesso!', 'success');
   };
 
   
   const addFornecedor = (forn) => {
     const newForn = { ...forn, id: `for-${Date.now()}` };
     setFornecedores((prev) => [...prev, newForn]);
+    showToast('Fornecedor cadastrado com sucesso!', 'success');
     return newForn;
   };
   const updateFornecedor = (id, updated) => {
     setFornecedores((prev) => prev.map((f) => (f.id === id ? { ...f, ...updated } : f)));
+    showToast('Fornecedor atualizado com sucesso!', 'success');
   };
   const deleteFornecedor = (id) => {
     setFornecedores((prev) => prev.filter((f) => f.id !== id));
+    showToast('Fornecedor excluído com sucesso!', 'success');
   };
 
   
@@ -295,6 +307,7 @@ export const DatabaseProvider = ({ children }) => {
       precoCusto: Number(prod.precoCusto || 0),
     };
     setProdutos((prev) => [...prev, newProd]);
+    showToast('Produto cadastrado com sucesso!', 'success');
     return newProd;
   };
   const updateProduto = (id, updated) => {
@@ -311,9 +324,11 @@ export const DatabaseProvider = ({ children }) => {
           : p
       )
     );
+    showToast('Produto atualizado com sucesso!', 'success');
   };
   const deleteProduto = (id) => {
     setProdutos((prev) => prev.filter((p) => p.id !== id));
+    showToast('Produto excluído com sucesso!', 'success');
   };
 
   
@@ -368,6 +383,7 @@ export const DatabaseProvider = ({ children }) => {
       setFinanceiro((prev) => [novaTransacao, ...prev]);
     }
 
+    showToast('Venda finalizada com sucesso!', 'success');
     return novaVenda;
   };
 
@@ -384,6 +400,7 @@ export const DatabaseProvider = ({ children }) => {
             data: new Date().toISOString(),
           };
           setFinanceiro((prev) => [novaTransacao, ...prev]);
+          showToast('Fiado quitado com sucesso!', 'success');
           return { ...v, pago: true };
         }
         return v;
@@ -437,6 +454,7 @@ export const DatabaseProvider = ({ children }) => {
       data: new Date().toISOString(),
     };
     setFinanceiro((prev) => [novaTransacao, ...prev]);
+    showToast('Compra registrada com sucesso!', 'success');
   };
 
   const excluirCompra = (compraId) => {
@@ -462,6 +480,7 @@ export const DatabaseProvider = ({ children }) => {
 
     
     setCompras((prev) => prev.filter((c) => c.id !== compraId));
+    showToast('Compra excluída e estoque estornado!', 'success');
   };
 
   const updateCompra = (compraId, updatedCompraData) => {
@@ -518,6 +537,7 @@ export const DatabaseProvider = ({ children }) => {
         return f;
       })
     );
+    showToast('Compra atualizada com sucesso!', 'success');
   };
 
   
@@ -536,6 +556,7 @@ export const DatabaseProvider = ({ children }) => {
       };
       setFinanceiro((prev) => [novaTransacao, ...prev]);
     }
+    showToast('Despesa registrada com sucesso!', 'success');
     return newDesp;
   };
 
@@ -575,6 +596,7 @@ export const DatabaseProvider = ({ children }) => {
         )
       );
     }
+    showToast('Despesa atualizada com sucesso!', 'success');
   };
 
   const deleteDespesa = (id) => {
@@ -583,6 +605,7 @@ export const DatabaseProvider = ({ children }) => {
     if (oldDesp && oldDesp.pago) {
       setFinanceiro((prev) => prev.filter((f) => f.id !== `fin-desp-${id}`));
     }
+    showToast('Despesa excluída com sucesso!', 'success');
   };
 
   
@@ -644,6 +667,8 @@ export const DatabaseProvider = ({ children }) => {
   return (
     <DatabaseContext.Provider
       value={{
+        toast,
+        showToast,
         clientes: visibleClientes,
         addCliente,
         updateCliente,

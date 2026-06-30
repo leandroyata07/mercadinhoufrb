@@ -7,6 +7,7 @@ import { ThemeProvider } from './components/ThemeProvider/ThemeProvider';
 
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
+import Toast from './components/Toast/Toast';
 
 
 import Login from './pages/Login/Login';
@@ -126,6 +127,7 @@ const AppContent = () => {
         </Routes>
       </main>
       <Footer />
+      <Toast />
     </div>
   );
 };

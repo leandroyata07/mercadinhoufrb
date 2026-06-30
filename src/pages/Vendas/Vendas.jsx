@@ -13,7 +13,7 @@ const formatCPF = (value) => {
 };
 
 const Vendas = () => {
-  const { produtos, clientes, addCliente, registrarVenda, vendas } = useDatabase();
+  const { produtos, clientes, addCliente, registrarVenda, vendas, showToast } = useDatabase();
 
   
   const [carrinho, setCarrinho] = useState(() => {
@@ -113,6 +113,15 @@ const Vendas = () => {
           okBtn.click();
         }
       }
+      if (e.key === 'F2') {
+        e.preventDefault();
+        const checkoutBtn = document.querySelector('.checkout-pdv-btn');
+        if (checkoutBtn) checkoutBtn.click();
+      }
+      if (e.key === 'F4') {
+        e.preventDefault();
+        setShowQuickClientModal(true);
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -143,6 +152,7 @@ const Vendas = () => {
     setSuccessMsg('');
     if (product.estoque <= 0) {
       setErrorMsg(`Produto "${product.nome}" sem estoque no momento.`);
+      showToast(`Produto "${product.nome}" sem estoque!`, 'error');
       return;
     }
 
@@ -151,12 +161,15 @@ const Vendas = () => {
       if (existing) {
         if (existing.quantidade >= product.estoque) {
           setErrorMsg(`Quantidade máxima de estoque atingida para "${product.nome}".`);
+          showToast(`Estoque máximo atingido para "${product.nome}"!`, 'warning');
           return prev;
         }
+        showToast(`Adicionado mais 1x "${product.nome}"!`, 'success');
         return prev.map((item) =>
           item.id === product.id ? { ...item, quantidade: item.quantidade + 1 } : item
         );
       }
+      showToast(`"${product.nome}" adicionado ao carrinho!`, 'success');
       return [...prev, { ...product, quantidade: 1 }];
     });
     setCaixaStatus('aberto');
@@ -448,7 +461,7 @@ const Vendas = () => {
                     onClick={() => setShowQuickClientModal(true)}
                   >
                     <UserPlus size={14} />
-                    Cadastrar Cliente
+                    Cadastrar Cliente <kbd className="shortcut-kbd">F4</kbd>
                   </button>
                 </div>
                 <div className="pdv-client-search-wrapper">
@@ -566,7 +579,7 @@ const Vendas = () => {
 
             <button className="btn btn-primary checkout-pdv-btn" onClick={handleCheckout}>
               <DollarSign size={18} />
-              Finalizar Venda
+              Finalizar Venda <kbd className="shortcut-kbd">F2</kbd>
             </button>
 
             {carrinho.length > 0 && (
