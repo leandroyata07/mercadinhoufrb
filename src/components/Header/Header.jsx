@@ -19,6 +19,8 @@ const Header = () => {
   const [showDeleteNotifModal, setShowDeleteNotifModal] = useState(false);
   const [deleteNotifPassword, setDeleteNotifPassword] = useState('');
   const [deleteNotifError, setDeleteNotifError] = useState('');
+  const [showConfirmLeaveModal, setShowConfirmLeaveModal] = useState(false);
+  const [pendingPath, setPendingPath] = useState('');
 
   
   React.useEffect(() => {
@@ -26,6 +28,8 @@ const Header = () => {
       if (e.key === 'Escape') {
         setShowNotifications(false);
         setShowDeleteNotifModal(false);
+        setShowConfirmLeaveModal(false);
+        setPendingPath('');
         setDeleteNotifPassword('');
         setDeleteNotifError('');
       }
@@ -74,13 +78,10 @@ const Header = () => {
       if (savedCart) {
         const cartItems = JSON.parse(savedCart);
         if (cartItems && cartItems.length > 0) {
-          const confirmLeave = window.confirm(
-            'Você possui itens no carrinho de vendas em aberto. Deseja mesmo mudar de página? (O carrinho continuará salvo)'
-          );
-          if (!confirmLeave) {
-            e.preventDefault();
-            return;
-          }
+          e.preventDefault();
+          setPendingPath(path);
+          setShowConfirmLeaveModal(true);
+          return;
         }
       }
     }
@@ -93,13 +94,10 @@ const Header = () => {
       if (savedCart) {
         const cartItems = JSON.parse(savedCart);
         if (cartItems && cartItems.length > 0) {
-          const confirmLeave = window.confirm(
-            'Você possui itens no carrinho de vendas em aberto. Deseja mesmo mudar de página? (O carrinho continuará salvo)'
-          );
-          if (!confirmLeave) {
-            e.preventDefault();
-            return;
-          }
+          e.preventDefault();
+          setPendingPath('/dashboard');
+          setShowConfirmLeaveModal(true);
+          return;
         }
       }
     }
@@ -340,6 +338,47 @@ const Header = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showConfirmLeaveModal && (
+        <div className="modal-overlay" style={{ zIndex: 9999 }}>
+          <div className="modal-content text-center" style={{ maxWidth: '400px', width: '90%', padding: '24px 20px' }}>
+            <h3 className="form-title text-warning" style={{ textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>Venda em Andamento</h3>
+            <p className="text-secondary" style={{ fontSize: '14px', marginBottom: '24px', lineHeight: '1.5' }}>
+              Você possui itens no carrinho de vendas em aberto. Deseja mesmo mudar de página?
+              <strong style={{ color: 'var(--text-primary)', display: 'block', marginTop: '8px' }}>
+                (Seus itens continuarão salvos)
+              </strong>
+            </p>
+            <div className="modal-actions-btns" style={{ display: 'flex', gap: '10px' }}>
+              <button
+                type="button"
+                className="btn btn-secondary w-full"
+                onClick={() => {
+                  setShowConfirmLeaveModal(false);
+                  setPendingPath('');
+                }}
+                style={{ padding: '10px', fontWeight: '700' }}
+              >
+                Permanecer
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary w-full"
+                onClick={() => {
+                  setShowConfirmLeaveModal(false);
+                  const path = pendingPath;
+                  setPendingPath('');
+                  closeMobileMenu();
+                  navigate(path);
+                }}
+                style={{ padding: '10px', fontWeight: '700' }}
+              >
+                Mudar de Página
+              </button>
+            </div>
           </div>
         </div>
       )}
