@@ -30,16 +30,16 @@ const initialFornecedores = [
 ];
 
 const initialProdutos = [
-  { id: 'prod-1', nome: 'Arroz Integral Tio João', marca: 'Tio João', unidade: 'kg', estoque: 15, preco: 8.50, isPreRegistered: true },
-  { id: 'prod-2', nome: 'Feijão Carioca Camil', marca: 'Camil', unidade: 'kg', estoque: 20, preco: 9.00, isPreRegistered: true },
-  { id: 'prod-3', nome: 'Leite Integral Leitíssimo', marca: 'Leitíssimo', unidade: 'L', estoque: 30, preco: 6.20, isPreRegistered: true },
-  { id: 'prod-4', nome: 'Café Melitta Vácuo', marca: 'Melitta', unidade: 'g', estoque: 25, preco: 18.90, isPreRegistered: true },
-  { id: 'prod-5', nome: 'Macarrão Espaguete Adria', marca: 'Adria', unidade: 'g', estoque: 50, preco: 4.50, isPreRegistered: true },
-  { id: 'prod-6', nome: 'Óleo de Soja Liza', marca: 'Liza', unidade: 'ml', estoque: 40, preco: 7.80, isPreRegistered: true },
-  { id: 'prod-7', nome: 'Açúcar Refinado União', marca: 'União', unidade: 'kg', estoque: 35, preco: 5.10, isPreRegistered: true },
-  { id: 'prod-8', nome: 'Sal Refinado Lebre', marca: 'Lebre', unidade: 'kg', estoque: 60, preco: 2.50, isPreRegistered: true },
-  { id: 'prod-9', nome: 'Sabonete Rexona 90g', marca: 'Rexona', unidade: 'un', estoque: 100, preco: 3.20, isPreRegistered: true },
-  { id: 'prod-10', nome: 'Detergente Ypê Coco 500ml', marca: 'Ypê', unidade: 'ml', estoque: 80, preco: 2.80, isPreRegistered: true },
+  { id: 'prod-1', nome: 'Arroz Integral Tio João', marca: 'Tio João', unidade: 'kg', estoque: 15, preco: 8.50, precoCusto: 5.50, isPreRegistered: true },
+  { id: 'prod-2', nome: 'Feijão Carioca Camil', marca: 'Camil', unidade: 'kg', estoque: 20, preco: 9.00, precoCusto: 6.00, isPreRegistered: true },
+  { id: 'prod-3', nome: 'Leite Integral Leitíssimo', marca: 'Leitíssimo', unidade: 'L', estoque: 30, preco: 6.20, precoCusto: 4.10, isPreRegistered: true },
+  { id: 'prod-4', nome: 'Café Melitta Vácuo', marca: 'Melitta', unidade: 'g', estoque: 25, preco: 18.90, precoCusto: 12.50, isPreRegistered: true },
+  { id: 'prod-5', nome: 'Macarrão Espaguete Adria', marca: 'Adria', unidade: 'g', estoque: 50, preco: 4.50, precoCusto: 3.00, isPreRegistered: true },
+  { id: 'prod-6', nome: 'Óleo de Soja Liza', marca: 'Liza', unidade: 'ml', estoque: 40, preco: 7.80, precoCusto: 5.20, isPreRegistered: true },
+  { id: 'prod-7', nome: 'Açúcar Refinado União', marca: 'União', unidade: 'kg', estoque: 35, preco: 5.10, precoCusto: 3.40, isPreRegistered: true },
+  { id: 'prod-8', nome: 'Sal Refinado Lebre', marca: 'Lebre', unidade: 'kg', estoque: 60, preco: 2.50, precoCusto: 1.60, isPreRegistered: true },
+  { id: 'prod-9', nome: 'Sabonete Rexona 90g', marca: 'Rexona', unidade: 'un', estoque: 100, preco: 3.20, precoCusto: 2.10, isPreRegistered: true },
+  { id: 'prod-10', nome: 'Detergente Ypê Coco 500ml', marca: 'Ypê', unidade: 'ml', estoque: 80, preco: 2.80, precoCusto: 1.80, isPreRegistered: true },
 ];
 
 const initialDespesas = [
@@ -287,7 +287,13 @@ export const DatabaseProvider = ({ children }) => {
 
   
   const addProduto = (prod) => {
-    const newProd = { ...prod, id: `prod-${Date.now()}`, estoque: Number(prod.estoque || 0), preco: Number(prod.preco || 0) };
+    const newProd = {
+      ...prod,
+      id: `prod-${Date.now()}`,
+      estoque: Number(prod.estoque || 0),
+      preco: Number(prod.preco || 0),
+      precoCusto: Number(prod.precoCusto || 0),
+    };
     setProdutos((prev) => [...prev, newProd]);
     return newProd;
   };
@@ -295,7 +301,13 @@ export const DatabaseProvider = ({ children }) => {
     setProdutos((prev) =>
       prev.map((p) =>
         p.id === id
-          ? { ...p, ...updated, estoque: Number(updated.estoque ?? p.estoque), preco: Number(updated.preco ?? p.preco) }
+          ? {
+              ...p,
+              ...updated,
+              estoque: Number(updated.estoque ?? p.estoque),
+              preco: Number(updated.preco ?? p.preco),
+              precoCusto: Number(updated.precoCusto ?? p.precoCusto ?? 0),
+            }
           : p
       )
     );
@@ -321,6 +333,7 @@ export const DatabaseProvider = ({ children }) => {
           ...item,
           produtoNome: prod ? prod.nome : 'Produto Removido',
           unidade: prod ? prod.unidade : 'un',
+          precoCusto: prod ? prod.precoCusto : 0,
         };
       }),
       formaPagamento: vendaData.formaPagamento,

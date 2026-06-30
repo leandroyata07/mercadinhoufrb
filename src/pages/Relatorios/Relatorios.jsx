@@ -5,7 +5,7 @@ import { FileText, Printer, FileSpreadsheet } from 'lucide-react';
 import './Relatorios.css';
 
 const Relatorios = () => {
-  const { produtos, vendas, compras, financeiro } = useDatabase();
+  const { produtos, vendas, compras, financeiro, despesas } = useDatabase();
   const [reportType, setReportType] = useState('estoque'); 
 
   
@@ -67,6 +67,104 @@ const Relatorios = () => {
         Tipo: f.tipo,
         Valor: `R$ ${f.valor.toFixed(2)}`,
       }));
+    }
+
+    if (reportType === 'dre') {
+      const filteredSales = vendas.filter((v) => {
+        const vDate = new Date(v.data);
+        if (start && vDate < start) return false;
+        if (end && vDate > end) return false;
+        return true;
+      });
+
+      const totalReceita = filteredSales.reduce((sum, v) => sum + v.valorTotal, 0);
+
+      let totalCMV = 0;
+      filteredSales.forEach((v) => {
+        v.itens.forEach((item) => {
+          const pCost = item.precoCusto ?? produtos.find((p) => p.id === item.produtoId)?.precoCusto ?? (item.precoVenda * 0.65);
+          totalCMV += item.quantidade * pCost;
+        });
+      });
+
+      const filteredDespesas = despesas.filter((d) => {
+        const dDate = new Date(d.dataVencimento);
+        if (start && dDate < start) return false;
+        if (end && dDate > end) return false;
+        return true;
+      });
+
+      const totalDespesas = filteredDespesas.reduce((sum, d) => sum + d.valor, 0);
+      const lucroBruto = totalReceita - totalCMV;
+      const lucroLiquido = lucroBruto - totalDespesas;
+
+      return [
+        { 'Conta / Categoria Contábil': '(+) FATURAMENTO DE VENDAS (RECEITA BRUTA)', 'Valor do Período': `R$ ${totalReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+        { 'Conta / Categoria Contábil': '(-) CUSTO DE MERCADORIAS VENDIDAS (CMV)', 'Valor do Período': `R$ ${totalCMV.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+        { 'Conta / Categoria Contábil': '(=) LUCRO BRUTO OPERACIONAL', 'Valor do Período': `R$ ${lucroBruto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+        { 'Conta / Categoria Contábil': '(-) DESPESAS OPERACIONAIS GERAIS', 'Valor do Período': `R$ ${totalDespesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+        { 'Conta / Categoria Contábil': '(=) LUCRO LÍQUIDO / PREJUÍZO DO EXERCÍCIO', 'Valor do Período': `R$ ${lucroLiquido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` },
+      ];
+    }
+
+    if (reportType === 'abc') {
+      const filteredSales = vendas.filter((v) => {
+        const vDate = new Date(v.data);
+        if (start && vDate < start) return false;
+        if (end && vDate > end) return false;
+        return true;
+      });
+
+      const productSales = {};
+      produtos.forEach((p) => {
+        productSales[p.id] = { id: p.id, nome: p.nome, marca: p.marca, totalRevenue: 0, qtySold: 0 };
+      });
+
+      filteredSales.forEach((v) => {
+        v.itens.forEach((item) => {
+          if (productSales[item.produtoId]) {
+            productSales[item.produtoId].totalRevenue += item.quantidade * item.precoVenda;
+            productSales[item.produtoId].qtySold += item.quantidade;
+          } else {
+            productSales[item.produtoId] = {
+              id: item.produtoId,
+              nome: item.produtoNome || 'Produto Removido',
+              marca: '',
+              totalRevenue: item.quantidade * item.precoVenda,
+              qtySold: item.quantidade
+            };
+          }
+        });
+      });
+
+      const sortedProducts = Object.values(productSales)
+        .filter(p => p.totalRevenue > 0)
+        .sort((a, b) => b.totalRevenue - a.totalRevenue);
+
+      const totalRevenueAll = sortedProducts.reduce((sum, p) => sum + p.totalRevenue, 0);
+
+      let accumulativeRevenue = 0;
+      return sortedProducts.map((p) => {
+        accumulativeRevenue += p.totalRevenue;
+        const share = totalRevenueAll > 0 ? (p.totalRevenue / totalRevenueAll) * 100 : 0;
+        const accumulativeShare = totalRevenueAll > 0 ? (accumulativeRevenue / totalRevenueAll) * 100 : 0;
+        
+        let classification = 'C';
+        if (accumulativeShare <= 80.1) {
+          classification = 'A';
+        } else if (accumulativeShare <= 95.1) {
+          classification = 'B';
+        }
+
+        return {
+          Classificação: classification,
+          Produto: p.nome,
+          'Qtd Vendida': `${p.qtySold} un`,
+          Faturamento: `R$ ${p.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+          'Participação': `${share.toFixed(1)}%`,
+          'Acumulado': `${accumulativeShare.toFixed(1)}%`
+        };
+      });
     }
 
     return [];
@@ -168,10 +266,12 @@ const Relatorios = () => {
               <option value="vendas">Relatório de Vendas</option>
               <option value="inadimplencia">Relatório de Inadimplência (Fiados)</option>
               <option value="balanco">Demonstrativo Financeiro (Entradas/Saídas)</option>
+              <option value="dre">Demonstrativo DRE Contábil</option>
+              <option value="abc">Curva ABC de Vendas de Produtos</option>
             </select>
           </div>
 
-          {(reportType === 'vendas' || reportType === 'balanco') && (
+          {(reportType === 'vendas' || reportType === 'balanco' || reportType === 'dre' || reportType === 'abc') && (
             <>
               <div className="form-group">
                 <label className="form-label">Data Inicial</label>
@@ -237,11 +337,49 @@ const Relatorios = () => {
               <tbody>
                 {data.map((row, index) => (
                   <tr key={index}>
-                    {Object.values(row).map((val, i) => (
-                      <td key={i} className={val === 'Em Aberto' ? 'text-warning font-bold' : ''}>
-                        {val}
-                      </td>
-                    ))}
+                    {Object.values(row).map((val, i) => {
+                      const isDre = reportType === 'dre';
+                      const isAbc = reportType === 'abc';
+                      const isHeaderCol = i === 0;
+
+                      let cellStyle = {};
+
+                      if (isDre) {
+                        if (isHeaderCol) {
+                          cellStyle = { fontWeight: '700' };
+                        } else {
+                          cellStyle = { fontWeight: '700', fontFamily: 'monospace', textAlign: 'right' };
+                          const label = row['Conta / Categoria Contábil'] || '';
+                          if (label.includes('LUCRO LÍQUIDO')) {
+                            const isLoss = val.includes('-');
+                            cellStyle.color = isLoss ? 'var(--error)' : 'var(--success)';
+                            cellStyle.fontSize = '15px';
+                          } else if (label.includes('LUCRO BRUTO')) {
+                            cellStyle.color = 'var(--accent)';
+                          } else if (label.includes('CMV') || label.includes('DESPESAS')) {
+                            cellStyle.color = 'var(--error)';
+                          } else {
+                            cellStyle.color = 'var(--success)';
+                          }
+                        }
+                      }
+
+                      if (isAbc && i === 0) {
+                        return (
+                          <td key={i} style={{ textAlign: 'center' }}>
+                            <span className={`badge ${val === 'A' ? 'badge-success' : val === 'B' ? 'badge-warning' : 'badge-danger'}`} style={{ fontWeight: '800', display: 'inline-block', width: '24px', textAlign: 'center' }}>
+                              {val}
+                            </span>
+                          </td>
+                        );
+                      }
+
+                      return (
+                        <td key={i} className={val === 'Em Aberto' ? 'text-warning font-bold' : ''} style={cellStyle}>
+                          {val}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>

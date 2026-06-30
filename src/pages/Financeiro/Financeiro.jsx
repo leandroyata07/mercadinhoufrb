@@ -4,7 +4,7 @@ import { DollarSign, CheckCircle2, TrendingUp, TrendingDown, ClipboardList } fro
 import './Financeiro.css';
 
 const Financeiro = () => {
-  const { vendas, financeiro, quitarFiado } = useDatabase();
+  const { vendas, financeiro, quitarFiado, despesas } = useDatabase();
   const [activeTab, setActiveTab] = useState('caixa'); 
 
   
@@ -69,6 +69,52 @@ const Financeiro = () => {
           <p className="fin-card-sub">Total de contas a receber</p>
         </div>
       </div>
+
+      {/* Projeção de Caixa */}
+      {(() => {
+        const totalDespesasPendentes = (despesas || [])
+          .filter((d) => !d.pago)
+          .reduce((sum, d) => sum + d.valor, 0);
+        const saldoProjetado = caixaAtual + totalFiados - totalDespesasPendentes;
+
+        return (
+          <div className="card" style={{ marginTop: '24px', padding: '20px', background: 'var(--bg-secondary)', borderLeft: '4px solid var(--accent)' }}>
+            <h3 className="section-subtitle" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <TrendingUp size={18} style={{ color: 'var(--accent)' }} />
+              Projeção Contábil de Caixa (Próximos 30 dias)
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', fontSize: '14px' }}>
+              <div style={{ padding: '12px', backgroundColor: 'var(--bg-tertiary)', borderRadius: 'var(--border-radius)' }}>
+                <span className="text-muted" style={{ display: 'block', marginBottom: '4px' }}>Saldo Atual Disponível</span>
+                <strong style={{ fontSize: '18px', color: 'var(--text-primary)', fontFamily: 'monospace' }}>
+                  {formatCurrency(caixaAtual)}
+                </strong>
+              </div>
+              <div style={{ padding: '12px', backgroundColor: 'var(--bg-tertiary)', borderRadius: 'var(--border-radius)' }}>
+                <span className="text-muted" style={{ display: 'block', marginBottom: '4px' }}>(+) Fiados a Receber</span>
+                <strong style={{ fontSize: '18px', color: 'var(--success)', fontFamily: 'monospace' }}>
+                  +{formatCurrency(totalFiados)}
+                </strong>
+              </div>
+              <div style={{ padding: '12px', backgroundColor: 'var(--bg-tertiary)', borderRadius: 'var(--border-radius)' }}>
+                <span className="text-muted" style={{ display: 'block', marginBottom: '4px' }}>(-) Despesas Pendentes (A Vencer)</span>
+                <strong style={{ fontSize: '18px', color: 'var(--error)', fontFamily: 'monospace' }}>
+                  -{formatCurrency(totalDespesasPendentes)}
+                </strong>
+              </div>
+              <div style={{ padding: '12px', backgroundColor: 'var(--bg-tertiary)', borderRadius: 'var(--border-radius)', border: '1px solid var(--accent)' }}>
+                <span className="text-muted" style={{ display: 'block', marginBottom: '4px' }}>Saldo Projetado Final</span>
+                <strong style={{ fontSize: '18px', color: saldoProjetado >= 0 ? 'var(--success)' : 'var(--error)', fontFamily: 'monospace' }}>
+                  {formatCurrency(saldoProjetado)}
+                </strong>
+              </div>
+            </div>
+            <p className="text-muted" style={{ fontSize: '12px', marginTop: '12px', fontStyle: 'italic' }}>
+              * Esta projeção estima o saldo disponível considerando que 100% dos fiados ativos sejam liquidados e todas as despesas operacionais em aberto sejam quitadas nos próximos 30 dias.
+            </p>
+          </div>
+        );
+      })()}
 
       {}
       <div className="tabs-container">

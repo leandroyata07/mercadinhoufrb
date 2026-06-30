@@ -184,7 +184,7 @@ const Cadastros = () => {
     if (activeTab === 'clientes') {
       setFormData({ nome: '', telefone: '', cpf: '' });
     } else if (activeTab === 'produtos') {
-      setFormData({ nome: '', marca: '', unidade: 'un', estoque: 0, preco: 0.0 });
+      setFormData({ nome: '', marca: '', unidade: 'un', estoque: 0, preco: 0.0, precoCusto: 0.0 });
     } else if (activeTab === 'fornecedores') {
       setFormData({ nome: '', cnpj: '', endereco: '', telefone: '', contato: '' });
     }
@@ -193,7 +193,11 @@ const Cadastros = () => {
 
   const handleOpenEdit = (item) => {
     setEditingId(item.id);
-    setFormData(item);
+    if (activeTab === 'produtos') {
+      setFormData({ ...item, precoCusto: item.precoCusto ?? 0.0 });
+    } else {
+      setFormData(item);
+    }
     setShowModal(true);
   };
 
@@ -558,6 +562,22 @@ const Cadastros = () => {
                       />
                     </div>
                     <div className="form-group">
+                      <label htmlFor="prod-cost" className="form-label">Preço de Custo (R$) *</label>
+                      <input
+                        id="prod-cost"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        name="precoCusto"
+                        required
+                        value={formData.precoCusto ?? 0}
+                        onChange={handleInputChange}
+                        className="form-input"
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row" style={{ marginTop: '12px' }}>
+                    <div className="form-group">
                       <label htmlFor="prod-price" className="form-label">Preço de Venda (R$) *</label>
                       <input
                         id="prod-price"
@@ -572,6 +592,50 @@ const Cadastros = () => {
                       />
                     </div>
                   </div>
+
+                  {activeTab === 'produtos' && (() => {
+                    const cost = Number(formData.precoCusto || 0);
+                    const price = Number(formData.preco || 0);
+                    let marginText = 'N/A';
+                    let markupText = 'N/A';
+                    let marginColor = 'var(--text-muted)';
+
+                    if (cost > 0 && price > 0) {
+                      const margin = ((price - cost) / price) * 100;
+                      const markup = price / cost;
+                      marginText = `${margin.toFixed(1)}%`;
+                      markupText = `${markup.toFixed(2)}x`;
+                      if (margin <= 0) {
+                        marginColor = 'var(--error)';
+                      } else if (margin < 20) {
+                        marginColor = 'var(--warning)';
+                      } else {
+                        marginColor = 'var(--success)';
+                      }
+                    }
+
+                    if (cost <= 0 || price <= 0) return null;
+
+                    return (
+                      <div style={{ 
+                        marginTop: '4px', 
+                        padding: '10px 14px', 
+                        backgroundColor: 'var(--bg-tertiary)', 
+                        borderRadius: 'var(--border-radius)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        fontSize: '13px',
+                        fontWeight: '600'
+                      }}>
+                        <div>
+                          Margem Bruta: <span style={{ color: marginColor }}>{marginText}</span>
+                        </div>
+                        <div>
+                          Markup: <span style={{ color: 'var(--accent)' }}>{markupText}</span>
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   <div className="form-group" style={{ marginTop: '12px' }}>
                     <label htmlFor="prod-fornecedor" className="form-label">Fornecedor</label>
