@@ -33,39 +33,39 @@ const Financeiro = () => {
 
       {}
       <div className="financeiro-cards-grid">
-        <div className="fin-card card">
+        <div className="fin-card card color-saldo">
           <div className="fin-card-header">
             <span className="fin-card-title">Saldo do Caixa</span>
-            <DollarSign size={20} className="text-success" />
+            <DollarSign size={20} />
           </div>
           <div className="fin-card-value">{formatCurrency(caixaAtual)}</div>
-          <p className="fin-card-sub text-success">Diferença de Entradas/Saídas</p>
+          <p className="fin-card-sub">Diferença de Entradas/Saídas</p>
         </div>
 
-        <div className="fin-card card">
+        <div className="fin-card card color-entradas">
           <div className="fin-card-header">
             <span className="fin-card-title">Total Entradas (Vendas/Quitações)</span>
-            <TrendingUp size={20} className="text-success" />
+            <TrendingUp size={20} />
           </div>
-          <div className="fin-card-value text-success">+{formatCurrency(totalEntradas)}</div>
+          <div className="fin-card-value">+{formatCurrency(totalEntradas)}</div>
           <p className="fin-card-sub">Valores físicos recebidos</p>
         </div>
 
-        <div className="fin-card card">
+        <div className="fin-card card color-saidas">
           <div className="fin-card-header">
             <span className="fin-card-title">Total Saídas (Compras de Insumos)</span>
-            <TrendingDown size={20} className="text-error" />
+            <TrendingDown size={20} />
           </div>
-          <div className="fin-card-value text-error">-{formatCurrency(totalSaidas)}</div>
+          <div className="fin-card-value">-{formatCurrency(totalSaidas)}</div>
           <p className="fin-card-sub">Pagamento de mercadorias</p>
         </div>
 
-        <div className="fin-card card">
+        <div className="fin-card card color-fiados">
           <div className="fin-card-header">
             <span className="fin-card-title">Fiados Pendentes (A Receber)</span>
-            <ClipboardList size={20} className="text-warning" />
+            <ClipboardList size={20} />
           </div>
-          <div className="fin-card-value text-warning">{formatCurrency(totalFiados)}</div>
+          <div className="fin-card-value">{formatCurrency(totalFiados)}</div>
           <p className="fin-card-sub">Total de contas a receber</p>
         </div>
       </div>

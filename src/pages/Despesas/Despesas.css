@@ -94,3 +94,53 @@
   font-weight: 800;
   text-transform: uppercase;
 }
+
+.despesas-metric-card.color-pendentes {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.despesas-metric-card.color-pagas {
+  background: linear-gradient(135deg, #047857 0%, #10b981 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.despesas-metric-card.color-geral {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.despesas-metric-card.color-progresso {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.despesas-metric-card.color-pendentes .metric-title,
+.despesas-metric-card.color-pagas .metric-title,
+.despesas-metric-card.color-geral .metric-title,
+.despesas-metric-card.color-progresso .metric-title {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.despesas-metric-card.color-pendentes .metric-value,
+.despesas-metric-card.color-pagas .metric-value,
+.despesas-metric-card.color-geral .metric-value,
+.despesas-metric-card.color-progresso .metric-value {
+  color: #ffffff !important;
+}
+
+.despesas-metric-card.color-pendentes .metric-sub,
+.despesas-metric-card.color-pagas .metric-sub,
+.despesas-metric-card.color-geral .metric-sub,
+.despesas-metric-card.color-progresso .metric-sub {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.despesas-metric-card.color-pendentes .metric-icon-box,
+.despesas-metric-card.color-pagas .metric-icon-box,
+.despesas-metric-card.color-geral .metric-icon-box,
+.despesas-metric-card.color-progresso .metric-icon-box {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}

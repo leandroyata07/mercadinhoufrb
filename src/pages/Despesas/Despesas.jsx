@@ -183,32 +183,32 @@ const Despesas = () => {
 
         {}
         <div className="despesas-metrics-grid">
-          <div className="despesas-metric-card">
+          <div className="despesas-metric-card color-pendentes">
             <div className="metric-header">
               <span className="metric-title">Total Pendente</span>
-              <div className="metric-icon-box bg-red">
+              <div className="metric-icon-box">
                 <AlertCircle size={20} />
               </div>
             </div>
-            <span className="metric-value text-error">{formatCurrency(totalPendentes)}</span>
+            <span className="metric-value">{formatCurrency(totalPendentes)}</span>
             <span className="metric-sub">Contas aguardando pagamento</span>
           </div>
 
-          <div className="despesas-metric-card">
+          <div className="despesas-metric-card color-pagas">
             <div className="metric-header">
               <span className="metric-title">Total Pago</span>
-              <div className="metric-icon-box bg-green">
+              <div className="metric-icon-box">
                 <CheckCircle2 size={20} />
               </div>
             </div>
-            <span className="metric-value text-success">{formatCurrency(totalPagas)}</span>
+            <span className="metric-value">{formatCurrency(totalPagas)}</span>
             <span className="metric-sub">Contas liquidadas</span>
           </div>
 
-          <div className="despesas-metric-card">
+          <div className="despesas-metric-card color-geral">
             <div className="metric-header">
               <span className="metric-title">Total Geral Lançado</span>
-              <div className="metric-icon-box bg-blue">
+              <div className="metric-icon-box">
                 <Wallet size={20} />
               </div>
             </div>
@@ -216,14 +216,14 @@ const Despesas = () => {
             <span className="metric-sub">Soma de todas as despesas</span>
           </div>
 
-          <div className="despesas-metric-card">
+          <div className="despesas-metric-card color-progresso">
             <div className="metric-header">
               <span className="metric-title">Progresso de Quitação</span>
-              <div className="metric-icon-box bg-yellow">
+              <div className="metric-icon-box">
                 <DollarSign size={20} />
               </div>
             </div>
-            <span className="metric-value text-warning">{percentualPago}%</span>
+            <span className="metric-value">{percentualPago}%</span>
             <span className="metric-sub">Porcentagem de contas pagas</span>
           </div>
         </div>

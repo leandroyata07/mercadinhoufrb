@@ -42,10 +42,10 @@ const Dashboard = () => {
 
       {}
       <div className="metrics-grid">
-        <div className="metric-card">
+        <div className="metric-card color-caixa">
           <div className="metric-header">
             <span className="metric-title">Caixa Atual</span>
-            <span className="metric-icon-box bg-green">
+            <span className="metric-icon-box">
               <DollarSign size={20} />
             </span>
           </div>
@@ -53,10 +53,10 @@ const Dashboard = () => {
           <div className="metric-sub">Em caixa e contas pagas</div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card color-fiados">
           <div className="metric-header">
             <span className="metric-title">Fiados a Receber</span>
-            <span className="metric-icon-box bg-yellow">
+            <span className="metric-icon-box">
               <ArrowUpRight size={20} />
             </span>
           </div>
@@ -64,10 +64,10 @@ const Dashboard = () => {
           <div className="metric-sub">Contas ativas em aberto</div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card color-faturamento">
           <div className="metric-header">
             <span className="metric-title">Faturamento de Vendas</span>
-            <span className="metric-icon-box bg-blue">
+            <span className="metric-icon-box">
               <ShoppingCart size={20} />
             </span>
           </div>
@@ -77,10 +77,10 @@ const Dashboard = () => {
           <div className="metric-sub">{vendas.length} vendas efetuadas</div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card color-investimento">
           <div className="metric-header">
             <span className="metric-title">Investimento em Compras</span>
-            <span className="metric-icon-box bg-red">
+            <span className="metric-icon-box">
               <ArrowDownRight size={20} />
             </span>
           </div>

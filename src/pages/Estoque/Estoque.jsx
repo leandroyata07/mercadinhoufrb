@@ -109,10 +109,10 @@ const Estoque = () => {
 
         {}
         <div className="estoque-metrics-grid">
-          <div className="estoque-metric-card">
+          <div className="estoque-metric-card color-itens">
             <div className="metric-header">
               <span className="metric-title">Itens em Estoque</span>
-              <div className="metric-icon-box bg-blue">
+              <div className="metric-icon-box">
                 <Package size={20} />
               </div>
             </div>
@@ -120,36 +120,36 @@ const Estoque = () => {
             <span className="metric-sub">Quantidade total de produtos</span>
           </div>
 
-          <div className="estoque-metric-card">
+          <div className="estoque-metric-card color-zerados">
             <div className="metric-header">
               <span className="metric-title">Produtos Zerados</span>
-              <div className="metric-icon-box bg-red">
+              <div className="metric-icon-box">
                 <ShieldAlert size={20} />
               </div>
             </div>
-            <span className="metric-value text-error">{totalZerados}</span>
+            <span className="metric-value">{totalZerados}</span>
             <span className="metric-sub">Itens sem estoque</span>
           </div>
 
-          <div className="estoque-metric-card">
+          <div className="estoque-metric-card color-baixos">
             <div className="metric-header">
               <span className="metric-title">Estoque Baixo (≤ 5)</span>
-              <div className="metric-icon-box bg-yellow">
+              <div className="metric-icon-box">
                 <AlertTriangle size={20} />
               </div>
             </div>
-            <span className="metric-value text-warning">{totalBaixos}</span>
+            <span className="metric-value">{totalBaixos}</span>
             <span className="metric-sub">Precisam de reposição</span>
           </div>
 
-          <div className="estoque-metric-card">
+          <div className="estoque-metric-card color-valor">
             <div className="metric-header">
               <span className="metric-title">Valor Estimado de Venda</span>
-              <div className="metric-icon-box bg-green">
+              <div className="metric-icon-box">
                 <TrendingUp size={20} />
               </div>
             </div>
-            <span className="metric-value text-success">{formatCurrency(valorInventario)}</span>
+            <span className="metric-value">{formatCurrency(valorInventario)}</span>
             <span className="metric-sub">Potencial de vendas no estoque</span>
           </div>
         </div>

@@ -96,3 +96,53 @@
 .font-medium {
   font-weight: 500;
 }
+
+.estoque-metric-card.color-itens {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.estoque-metric-card.color-zerados {
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.estoque-metric-card.color-baixos {
+  background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.estoque-metric-card.color-valor {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.estoque-metric-card.color-itens .metric-title,
+.estoque-metric-card.color-zerados .metric-title,
+.estoque-metric-card.color-baixos .metric-title,
+.estoque-metric-card.color-valor .metric-title {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.estoque-metric-card.color-itens .metric-value,
+.estoque-metric-card.color-zerados .metric-value,
+.estoque-metric-card.color-baixos .metric-value,
+.estoque-metric-card.color-valor .metric-value {
+  color: #ffffff !important;
+}
+
+.estoque-metric-card.color-itens .metric-sub,
+.estoque-metric-card.color-zerados .metric-sub,
+.estoque-metric-card.color-baixos .metric-sub,
+.estoque-metric-card.color-valor .metric-sub {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.estoque-metric-card.color-itens .metric-icon-box,
+.estoque-metric-card.color-zerados .metric-icon-box,
+.estoque-metric-card.color-baixos .metric-icon-box,
+.estoque-metric-card.color-valor .metric-icon-box {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}

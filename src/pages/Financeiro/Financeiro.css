@@ -81,3 +81,52 @@
 .receive-pay-btn:hover {
   background-color: var(--success-hover);
 }
+
+.fin-card.color-saldo {
+  background: linear-gradient(135deg, #065f46 0%, #059669 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.fin-card.color-entradas {
+  background: linear-gradient(135deg, #115e59 0%, #0d9488 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.fin-card.color-saidas {
+  background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.fin-card.color-fiados {
+  background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.fin-card.color-saldo .fin-card-title,
+.fin-card.color-entradas .fin-card-title,
+.fin-card.color-saidas .fin-card-title,
+.fin-card.color-fiados .fin-card-title {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.fin-card.color-saldo .fin-card-value,
+.fin-card.color-entradas .fin-card-value,
+.fin-card.color-saidas .fin-card-value,
+.fin-card.color-fiados .fin-card-value {
+  color: #ffffff !important;
+}
+
+.fin-card.color-saldo .fin-card-sub,
+.fin-card.color-entradas .fin-card-sub,
+.fin-card.color-saidas .fin-card-sub,
+.fin-card.color-fiados .fin-card-sub {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.fin-card.color-saldo svg,
+.fin-card.color-entradas svg,
+.fin-card.color-saidas svg,
+.fin-card.color-fiados svg {
+  color: #ffffff !important;
+}

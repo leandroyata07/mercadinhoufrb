@@ -251,3 +251,53 @@
 .mb-4 {
   margin-bottom: 16px;
 }
+
+.metric-card.color-caixa {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.metric-card.color-fiados {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.metric-card.color-faturamento {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+.metric-card.color-investimento {
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+.metric-card.color-caixa .metric-title,
+.metric-card.color-fiados .metric-title,
+.metric-card.color-faturamento .metric-title,
+.metric-card.color-investimento .metric-title {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.metric-card.color-caixa .metric-value,
+.metric-card.color-fiados .metric-value,
+.metric-card.color-faturamento .metric-value,
+.metric-card.color-investimento .metric-value {
+  color: #ffffff !important;
+}
+
+.metric-card.color-caixa .metric-sub,
+.metric-card.color-fiados .metric-sub,
+.metric-card.color-faturamento .metric-sub,
+.metric-card.color-investimento .metric-sub {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.metric-card.color-caixa .metric-icon-box,
+.metric-card.color-fiados .metric-icon-box,
+.metric-card.color-faturamento .metric-icon-box,
+.metric-card.color-investimento .metric-icon-box {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
