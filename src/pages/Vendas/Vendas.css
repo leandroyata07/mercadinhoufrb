@@ -550,22 +550,25 @@
 
 @media print {
   body * {
-    visibility: hidden;
+    visibility: hidden !important;
   }
   #thermal-print-area, #thermal-print-area * {
-    visibility: visible;
+    visibility: visible !important;
   }
   #thermal-print-area {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 0;
-    width: 76mm; 
-    box-shadow: none;
-    border-left: none;
-    border-right: none;
-    padding: 0;
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 0 !important;
+    width: 76mm !important; 
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
     background: #ffffff !important;
+    z-index: 9999999 !important;
   }
 }
 
