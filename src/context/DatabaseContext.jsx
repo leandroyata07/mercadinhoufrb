@@ -232,7 +232,8 @@ export const DatabaseProvider = ({ children }) => {
   };
 
   const [hidePreRegistered, setHidePreRegistered] = useState(() => {
-    return localStorage.getItem('mercadinho_hide_pre') === 'true';
+    const saved = localStorage.getItem('mercadinho_hide_pre');
+    return saved !== null ? saved === 'true' : true;
   });
 
   useEffect(() => {
