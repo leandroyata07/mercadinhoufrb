@@ -1,14 +1,18 @@
-# Mercadinho UFRB - Sistema de Gestão Comercial e PDV 🛍️
+# Trabalho 4 Final - Mercadinho UFRB
 
-Este repositório contém o projeto final (**Trabalho 4**) desenvolvido para o componente curricular de desenvolvimento web. O sistema consiste em uma solução completa de Frente de Caixa (PDV) e Retaguarda (ERP) voltada para o comércio varejista simulado (**Mercadinho UFRB**), construída como uma Single Page Application (SPA) moderna, responsiva e de alta performance utilizando **React 19**, **Vite** e **Vanilla CSS**.
+### Equipe do Projeto
+* **Integrante:** Leandro Oliveira Lima
+* **Período:** 3º Semestre
+* **Curso/Disciplina:** Licenciatura em Computação - UFRB-FSA / Desenvolvimento de Software I
+* **Professor:** Tassio Valle
 
 ---
 
-## 🎓 Contexto Acadêmico
+## 📝 Descrição do Projeto
 
-* **Instituição:** Universidade Federal do Recôncavo da Bahia (UFRB)
-* **Estudante:** Leandro Yata
-* **Projeto:** Trabalho Final (Trabalho 4) - Sistema de Gestão e Frente de Caixa
+Desenvolvi este sistema com o objetivo de criar uma solução prática, moderna e intuitiva de Frente de Caixa (PDV) e Retaguarda (ERP) para pequenos comércios varejistas, simulando o dia a dia operacional de um mercado de bairro (**Mercadinho UFRB**). 
+
+Como futuro educador e profissional de computação, meu foco foi aliar uma arquitetura técnica limpa e robusta em **React 19** e **Vite** a uma experiência de usuário (UX) premium e visualmente fluida desenvolvida com **Vanilla CSS**. O sistema integra rotinas de login administrativo, controle rigoroso de estoque com alertas de níveis críticos, gerenciamento de compras e fornecedores, fluxo de caixa diário, lançamento e estorno de despesas, relatórios consolidados e um PDV interativo capaz de processar vendas em dinheiro, pix, cartões e fiado, gerando inclusive cupons não fiscais perfeitamente otimizados para impressão térmica.
 
 ---
 
