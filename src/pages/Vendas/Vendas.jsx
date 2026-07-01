@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDatabase } from '../../context/DatabaseContext';
-import { Search, ShoppingCart, UserPlus, Trash2, Plus, Minus, DollarSign, Eye, Printer, RotateCcw } from 'lucide-react';
+import { Search, ShoppingCart, UserPlus, Trash2, Plus, Minus, DollarSign, Eye, Printer, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react';
 import './Vendas.css';
 
 const formatCPF = (value) => {
@@ -25,6 +25,7 @@ const Vendas = () => {
     }
   });
   const [searchTerm, setSearchTerm] = useState('');
+  const [showAllProductsList, setShowAllProductsList] = useState(false);
   const [selectedClienteId, setSelectedClienteId] = useState(() => {
     return localStorage.getItem('mercadinho_selectedClienteId') || 'default';
   });
@@ -108,6 +109,7 @@ const Vendas = () => {
         setShowReturnModal(false);
         setShowClientResults(false);
         setSearchTerm('');
+        setShowAllProductsList(false);
         setClientSearchQuery('');
         setShowSearchSalesModal(false);
         setShowSaleDetailsModal(false);
@@ -345,7 +347,7 @@ const Vendas = () => {
         </h1>
         <button
           type="button"
-          className="btn btn-secondary"
+          className="btn"
           onClick={() => {
             setSaleFilterClient('');
             setSaleFilterDate('');
@@ -355,7 +357,16 @@ const Vendas = () => {
             setSaleFilterMaxVal('');
             setShowSearchSalesModal(true);
           }}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontWeight: '600' }}
+          style={{ 
+            display: 'inline-flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            padding: '10px 18px', 
+            fontWeight: '700',
+            backgroundColor: 'var(--accent-light)',
+            color: 'var(--accent)',
+            border: '1px solid var(--accent)'
+          }}
         >
           <Search size={16} />
           Buscar Vendas Lançadas
@@ -371,18 +382,77 @@ const Vendas = () => {
           {}
           <div className="card search-card-pdv">
             <h3 className="section-subtitle">Buscar Produtos</h3>
-            <div className="pdv-search-box">
-              <Search className="pdv-search-icon" size={18} />
+            
+            <div className="pdv-search-box" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <Search className="pdv-search-icon" size={18} style={{ position: 'absolute', left: '14px', color: 'var(--text-muted)' }} />
               <input
                 type="text"
                 placeholder="Busque por nome ou marca do produto..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (e.target.value) {
+                    setShowAllProductsList(false);
+                  }
+                }}
                 className="form-input pdv-search-input"
+                style={{ paddingLeft: '42px', paddingRight: '40px', width: '100%' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowAllProductsList(!showAllProductsList)}
+                title="Mostrar todos os produtos"
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  padding: '0 4px',
+                  zIndex: 10
+                }}
+              >
+                {showAllProductsList ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              </button>
             </div>
 
-            {}
+            {showAllProductsList && !searchTerm && (
+              <div className="pdv-results-dropdown" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                {filteredProducts.map((p) => (
+                  <div
+                    key={p.id}
+                    className="pdv-search-result-item"
+                    onClick={() => {
+                      addToCart(p);
+                      setSearchTerm('');
+                      setShowAllProductsList(false);
+                    }}
+                  >
+                    <div className="pdv-result-info">
+                      <span className="font-bold">{p.nome}</span>
+                      <span className="text-secondary">{p.marca} ({p.unidade})</span>
+                    </div>
+                    <div className="pdv-result-action">
+                      <span className="result-price">
+                        R$ {p.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
+                      <span className={`badge ${p.estoque > 5 ? 'badge-success' : 'badge-warning'}`}>
+                        Estoque: {p.estoque}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                {filteredProducts.length === 0 && (
+                  <p className="no-result-text">Nenhum produto cadastrado.</p>
+                )}
+              </div>
+            )}
+
             {searchTerm && (
               <div className="pdv-results-dropdown">
                 {filteredProducts.slice(0, 5).map((p) => (
@@ -392,6 +462,7 @@ const Vendas = () => {
                     onClick={() => {
                       addToCart(p);
                       setSearchTerm('');
+                      setShowAllProductsList(false);
                     }}
                   >
                     <div className="pdv-result-info">
