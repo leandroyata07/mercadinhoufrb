@@ -549,17 +549,17 @@
 
 
 @media print {
-  /* Hide main navigation, footer and the main PDV container */
+  
   header, footer, nav, .vendas-container {
     display: none !important;
   }
 
-  /* Hide all modal overlays except the active print ticket overlay! */
+  
   .modal-overlay:not(.print-modal-overlay) {
     display: none !important;
   }
 
-  /* Reset print modal overlay styles for printing */
+  
   .print-modal-overlay {
     position: relative !important;
     display: block !important;
@@ -574,7 +574,7 @@
     z-index: auto !important;
   }
 
-  /* Reset modal content card styles inside the print overlay */
+  
   .print-modal-overlay .modal-content {
     position: relative !important;
     display: block !important;
@@ -592,14 +592,14 @@
     animation: none !important;
   }
 
-  /* Hide modal titles, instructions, and buttons inside the print overlay */
+  
   .print-modal-overlay .modal-content > h3,
   .print-modal-overlay .modal-content > p,
   .print-modal-overlay .modal-content > .modal-actions-btns {
     display: none !important;
   }
 
-  /* Force thermal ticket structure layout for printer roll */
+  
   .thermal-ticket {
     display: block !important;
     width: 76mm !important;

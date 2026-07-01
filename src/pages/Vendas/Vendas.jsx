@@ -69,7 +69,7 @@ const Vendas = () => {
   const [showSuccessCheckoutModal, setShowSuccessCheckoutModal] = useState(false);
   const [completedSale, setCompletedSale] = useState(null);
 
-  // States for sale return/reverse
+  
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [returnSaleId, setReturnSaleId] = useState(null);
   const [returnPassword, setReturnPassword] = useState('');
@@ -299,7 +299,7 @@ const Vendas = () => {
         setReturnReason('Cliente devolveu - produto vencido');
         setReturnError('');
         
-        // Update selectedSale details view state if open
+        
         if (selectedSale && selectedSale.id === returnSaleId) {
           setSelectedSale((prev) => ({ ...prev, estornada: true, motivoEstorno: returnReason }));
         }

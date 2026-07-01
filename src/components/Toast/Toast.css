@@ -1,6 +1,6 @@
 .toast-notification-item {
   position: fixed;
-  bottom: 60px; /* Aligned above the sticky footer */
+  bottom: 60px; 
   right: 24px;
   z-index: 10000;
   display: flex;
@@ -63,7 +63,7 @@
   color: var(--text-primary);
 }
 
-/* Slide up animation */
+
 @keyframes toastSlideUp {
   from {
     opacity: 0;

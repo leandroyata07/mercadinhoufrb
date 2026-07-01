@@ -413,7 +413,7 @@ export const DatabaseProvider = ({ children }) => {
     const venda = vendas.find((v) => v.id === vendaId);
     if (!venda || venda.estornada) return false;
 
-    // 1. Revert product stock
+    
     setProdutos((prevProdutos) =>
       prevProdutos.map((p) => {
         const itemVenda = venda.itens.find((i) => i.produtoId === p.id);
@@ -424,7 +424,7 @@ export const DatabaseProvider = ({ children }) => {
       })
     );
 
-    // 2. Adjust finance ledger
+    
     const wasPaid = venda.formaPagamento !== 'fiado' || (venda.formaPagamento === 'fiado' && venda.pago);
     if (wasPaid) {
       const transacaoEstorno = {
@@ -437,7 +437,7 @@ export const DatabaseProvider = ({ children }) => {
       setFinanceiro((prev) => [transacaoEstorno, ...prev]);
     }
 
-    // 3. Mark sale as returned
+    
     setVendas((prevVendas) =>
       prevVendas.map((v) =>
         v.id === vendaId ? { ...v, estornada: true, motivoEstorno: motivo || 'Devolução de itens' } : v

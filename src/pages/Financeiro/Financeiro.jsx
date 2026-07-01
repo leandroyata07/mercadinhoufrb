@@ -80,7 +80,7 @@ const Financeiro = () => {
         </div>
       </div>
 
-      {/* Projeção de Caixa */}
+      
       {(() => {
         const totalDespesasPendentes = (despesas || [])
           .filter((d) => !d.pago)

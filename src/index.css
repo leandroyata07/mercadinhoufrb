@@ -330,7 +330,7 @@ button {
   }
 }
 
-/* Custom premium improvements */
+
 .btn {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -344,7 +344,7 @@ button {
   transform: translateY(0) scale(0.97) !important;
 }
 
-/* Modals premium scale animation */
+
 .modal-overlay {
   animation: fadeInOverlay 0.2s ease-out forwards;
   backdrop-filter: blur(4px) !important;
@@ -370,7 +370,7 @@ button {
   }
 }
 
-/* Keyboard shortcut indicators (KBD) */
+
 .shortcut-kbd {
   background-color: rgba(255, 255, 255, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
@@ -393,7 +393,7 @@ button {
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Header column filter styles */
+
 .header-cell-content {
   display: flex;
   flex-direction: column;
