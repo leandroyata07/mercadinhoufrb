@@ -26,6 +26,7 @@ const Vendas = () => {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [showAllProductsList, setShowAllProductsList] = useState(false);
+  const [showAllClientsList, setShowAllClientsList] = useState(false);
   const [selectedClienteId, setSelectedClienteId] = useState(() => {
     return localStorage.getItem('mercadinho_selectedClienteId') || 'default';
   });
@@ -110,6 +111,7 @@ const Vendas = () => {
         setShowClientResults(false);
         setSearchTerm('');
         setShowAllProductsList(false);
+        setShowAllClientsList(false);
         setClientSearchQuery('');
         setShowSearchSalesModal(false);
         setShowSaleDetailsModal(false);
@@ -567,18 +569,49 @@ const Vendas = () => {
                   </button>
                 </div>
                 <div className="pdv-client-search-wrapper">
-                  <input
-                    id="cliente-search-input"
-                    type="text"
-                    placeholder="Digite para filtrar clientes..."
-                    value={clientSearchQuery}
-                    onChange={(e) => {
-                      setClientSearchQuery(e.target.value);
-                      setShowClientResults(true);
-                    }}
-                    onFocus={() => setShowClientResults(true)}
-                    className="form-input"
-                  />
+                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                    <input
+                      id="cliente-search-input"
+                      type="text"
+                      placeholder="Digite para filtrar clientes..."
+                      value={clientSearchQuery}
+                      onChange={(e) => {
+                        setClientSearchQuery(e.target.value);
+                        setShowClientResults(true);
+                        if (e.target.value) {
+                          setShowAllClientsList(false);
+                        }
+                      }}
+                      onFocus={() => setShowClientResults(true)}
+                      className="form-input"
+                      style={{ paddingRight: '40px', width: '100%' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAllClientsList(!showAllClientsList);
+                        setShowClientResults(true);
+                      }}
+                      title="Mostrar todos os clientes"
+                      style={{
+                        position: 'absolute',
+                        right: '12px',
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                        padding: '0 4px',
+                        zIndex: 10
+                      }}
+                    >
+                      {showAllClientsList ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
+                  </div>
+                  
                   {selectedClienteId !== 'default' && (
                     <div className="selected-client-display-badge">
                       Selecionado: <strong>{clientes.find(c => c.id === selectedClienteId)?.nome}</strong>
@@ -594,6 +627,30 @@ const Vendas = () => {
                       </button>
                     </div>
                   )}
+
+                  {showAllClientsList && !clientSearchQuery && showClientResults && (
+                    <div className="pdv-client-results-dropdown" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                      {filteredClients.map((c) => (
+                        <div
+                          key={c.id}
+                          className="pdv-client-result-item"
+                          onClick={() => {
+                            setSelectedClienteId(c.id);
+                            setClientSearchQuery(c.nome);
+                            setShowClientResults(false);
+                            setShowAllClientsList(false);
+                          }}
+                        >
+                          <span className="font-bold">{c.nome}</span>
+                          <span className="text-secondary">{c.telefone || 'Sem Tel'}</span>
+                        </div>
+                      ))}
+                      {filteredClients.length === 0 && (
+                        <p className="no-result-text">Nenhum cliente cadastrado.</p>
+                      )}
+                    </div>
+                  )}
+
                   {showClientResults && clientSearchQuery && (
                     <div className="pdv-client-results-dropdown">
                       {filteredClients.map((c) => (
@@ -604,6 +661,7 @@ const Vendas = () => {
                             setSelectedClienteId(c.id);
                             setClientSearchQuery(c.nome);
                             setShowClientResults(false);
+                            setShowAllClientsList(false);
                           }}
                         >
                           <span className="font-bold">{c.nome}</span>
