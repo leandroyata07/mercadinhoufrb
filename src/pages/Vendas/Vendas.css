@@ -554,8 +554,13 @@
     display: none !important;
   }
 
-  /* Reset modal overlay styles for printing */
-  .modal-overlay {
+  /* Hide all modal overlays except the active print ticket overlay! */
+  .modal-overlay:not(.print-modal-overlay) {
+    display: none !important;
+  }
+
+  /* Reset print modal overlay styles for printing */
+  .print-modal-overlay {
     position: relative !important;
     display: block !important;
     background: none !important;
@@ -569,8 +574,8 @@
     z-index: auto !important;
   }
 
-  /* Reset modal content card styles for printing */
-  .modal-content {
+  /* Reset modal content card styles inside the print overlay */
+  .print-modal-overlay .modal-content {
     position: relative !important;
     display: block !important;
     background: none !important;
@@ -587,10 +592,10 @@
     animation: none !important;
   }
 
-  /* Hide modal titles, help instructions and dialog action buttons */
-  .modal-content > h3,
-  .modal-content > p,
-  .modal-content > .modal-actions-btns {
+  /* Hide modal titles, instructions, and buttons inside the print overlay */
+  .print-modal-overlay .modal-content > h3,
+  .print-modal-overlay .modal-content > p,
+  .print-modal-overlay .modal-content > .modal-actions-btns {
     display: none !important;
   }
 

@@ -1116,7 +1116,7 @@ const Vendas = () => {
       )}
 
       {showSuccessCheckoutModal && completedSale && (
-        <div className="modal-overlay" style={{ zIndex: 500 }}>
+        <div className="modal-overlay print-modal-overlay" style={{ zIndex: 500 }}>
           <div className="modal-content text-center" style={{ maxWidth: '440px', width: '90%', padding: '24px 20px', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 className="form-title text-success" style={{ marginBottom: '16px', textAlign: 'center', textTransform: 'uppercase' }}>VENDA CONCLUÍDA!</h3>
 
@@ -1219,7 +1219,7 @@ const Vendas = () => {
 
       {}
       {printSaleTarget && (
-        <div className="modal-overlay" style={{ zIndex: 600 }}>
+        <div className="modal-overlay print-modal-overlay" style={{ zIndex: 600 }}>
           <div className="modal-content text-center" style={{ maxWidth: '440px', width: '90%', padding: '24px 20px', maxHeight: '90vh', overflowY: 'auto' }}>
             <h3 className="form-title text-primary" style={{ marginBottom: '4px' }}>Cupom da Venda</h3>
             <p className="text-secondary" style={{ fontSize: '13px', marginBottom: '16px', lineHeight: '1.4' }}>
