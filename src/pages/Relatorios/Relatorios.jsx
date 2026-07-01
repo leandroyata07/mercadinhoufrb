@@ -40,12 +40,12 @@ const Relatorios = () => {
         Data: new Date(v.data).toLocaleString('pt-BR'),
         Total: `R$ ${v.valorTotal.toFixed(2)}`,
         Pagamento: v.formaPagamento.toUpperCase(),
-        Status: v.pago ? 'Pago' : 'Em Aberto',
+        Status: v.estornada ? 'ESTORNADA' : (v.pago ? 'Pago' : 'Em Aberto'),
       }));
     }
 
     if (reportType === 'inadimplencia') {
-      const filtered = vendas.filter((v) => v.formaPagamento === 'fiado' && !v.pago);
+      const filtered = vendas.filter((v) => v.formaPagamento === 'fiado' && !v.pago && !v.estornada);
       return filtered.map((v) => ({
         ID: v.id,
         Cliente: v.clienteNome,
@@ -74,6 +74,7 @@ const Relatorios = () => {
         const vDate = new Date(v.data);
         if (start && vDate < start) return false;
         if (end && vDate > end) return false;
+        if (v.estornada) return false;
         return true;
       });
 
@@ -112,6 +113,7 @@ const Relatorios = () => {
         const vDate = new Date(v.data);
         if (start && vDate < start) return false;
         if (end && vDate > end) return false;
+        if (v.estornada) return false;
         return true;
       });
 

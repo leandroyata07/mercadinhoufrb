@@ -408,6 +408,45 @@ export const DatabaseProvider = ({ children }) => {
     );
   };
 
+  const estornarVenda = (vendaId, motivo) => {
+    const venda = vendas.find((v) => v.id === vendaId);
+    if (!venda || venda.estornada) return false;
+
+    // 1. Revert product stock
+    setProdutos((prevProdutos) =>
+      prevProdutos.map((p) => {
+        const itemVenda = venda.itens.find((i) => i.produtoId === p.id);
+        if (itemVenda) {
+          return { ...p, estoque: p.estoque + itemVenda.quantidade };
+        }
+        return p;
+      })
+    );
+
+    // 2. Adjust finance ledger
+    const wasPaid = venda.formaPagamento !== 'fiado' || (venda.formaPagamento === 'fiado' && venda.pago);
+    if (wasPaid) {
+      const transacaoEstorno = {
+        id: `fin-estorno-${Date.now()}`,
+        tipo: 'Saída',
+        descricao: `Reembolso Estorno Venda ${vendaId} - Motivo: ${motivo || 'Devolução'}`,
+        valor: venda.valorTotal,
+        data: new Date().toISOString(),
+      };
+      setFinanceiro((prev) => [transacaoEstorno, ...prev]);
+    }
+
+    // 3. Mark sale as returned
+    setVendas((prevVendas) =>
+      prevVendas.map((v) =>
+        v.id === vendaId ? { ...v, estornada: true, motivoEstorno: motivo || 'Devolução de itens' } : v
+      )
+    );
+
+    showToast('Venda estornada e estoque devolvido!', 'success');
+    return true;
+  };
+
   
   const registrarCompra = (compraData) => {
     
@@ -683,6 +722,7 @@ export const DatabaseProvider = ({ children }) => {
         deleteProduto,
         vendas: visibleVendas,
         registrarVenda,
+        estornarVenda,
         quitarFiado,
         compras: visibleCompras,
         registrarCompra,

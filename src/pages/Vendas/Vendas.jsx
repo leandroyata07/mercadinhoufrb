@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDatabase } from '../../context/DatabaseContext';
-import { Search, ShoppingCart, UserPlus, Trash2, Plus, Minus, DollarSign, Eye, Printer } from 'lucide-react';
+import { Search, ShoppingCart, UserPlus, Trash2, Plus, Minus, DollarSign, Eye, Printer, RotateCcw } from 'lucide-react';
 import './Vendas.css';
 
 const formatCPF = (value) => {
@@ -13,7 +13,7 @@ const formatCPF = (value) => {
 };
 
 const Vendas = () => {
-  const { produtos, clientes, addCliente, registrarVenda, vendas, showToast } = useDatabase();
+  const { produtos, clientes, addCliente, registrarVenda, vendas, showToast, estornarVenda } = useDatabase();
 
   
   const [carrinho, setCarrinho] = useState(() => {
@@ -67,6 +67,13 @@ const Vendas = () => {
   const [showSuccessCheckoutModal, setShowSuccessCheckoutModal] = useState(false);
   const [completedSale, setCompletedSale] = useState(null);
 
+  // States for sale return/reverse
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [returnSaleId, setReturnSaleId] = useState(null);
+  const [returnPassword, setReturnPassword] = useState('');
+  const [returnReason, setReturnReason] = useState('Cliente devolveu - produto vencido');
+  const [returnError, setReturnError] = useState('');
+
   
   const [printSaleTarget, setPrintSaleTarget] = useState(null);
   
@@ -98,6 +105,7 @@ const Vendas = () => {
       if (e.key === 'Escape') {
         setShowQuickClientModal(false);
         setShowCancelModal(false);
+        setShowReturnModal(false);
         setShowClientResults(false);
         setSearchTerm('');
         setClientSearchQuery('');
@@ -273,6 +281,29 @@ const Vendas = () => {
       setTimeout(() => setSuccessMsg(''), 2000);
     } else {
       setModalError('Senha incorreta. Cancelamento não autorizado.');
+    }
+  };
+
+  const handleReturnSale = (e) => {
+    e.preventDefault();
+    setReturnError('');
+    if (returnPassword === 'admin') {
+      const success = estornarVenda(returnSaleId, returnReason);
+      if (success) {
+        setShowReturnModal(false);
+        setReturnPassword('');
+        setReturnReason('Cliente devolveu - produto vencido');
+        setReturnError('');
+        
+        // Update selectedSale details view state if open
+        if (selectedSale && selectedSale.id === returnSaleId) {
+          setSelectedSale((prev) => ({ ...prev, estornada: true, motivoEstorno: returnReason }));
+        }
+      } else {
+        setReturnError('Erro ao registrar o estorno de venda no banco.');
+      }
+    } else {
+      setReturnError('Senha do administrador incorreta.');
     }
   };
 
@@ -805,7 +836,7 @@ const Vendas = () => {
                           {sale.formaPagamento}
                         </span>
                       </td>
-                      <td className="font-bold text-success">
+                      <td className={`font-bold ${sale.estornada ? 'text-secondary' : 'text-success'}`} style={sale.estornada ? { textDecoration: 'line-through' } : {}}>
                         R$ {sale.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td>
@@ -832,6 +863,25 @@ const Vendas = () => {
                           >
                             <Printer size={14} />
                           </button>
+                          {!sale.estornada ? (
+                            <button
+                              type="button"
+                              className="delete-action-btn"
+                              onClick={() => {
+                                setReturnSaleId(sale.id);
+                                setReturnPassword('');
+                                setReturnReason('Cliente devolveu - produto vencido');
+                                setReturnError('');
+                                setShowReturnModal(true);
+                              }}
+                              title="Estornar Venda (Devolução)"
+                              style={{ borderColor: 'var(--error)', color: 'var(--error)' }}
+                            >
+                              <RotateCcw size={14} />
+                            </button>
+                          ) : (
+                            <span className="badge badge-danger">Estornada</span>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -864,6 +914,15 @@ const Vendas = () => {
           <div className="modal-content" style={{ maxWidth: '650px', width: '90%' }}>
             <h3 className="form-title">Detalhes da Venda {selectedSale.id}</h3>
             
+            {selectedSale.estornada && (
+               <div style={{ backgroundColor: 'var(--error-light)', color: 'var(--error)', padding: '12px', borderRadius: 'var(--border-radius-md)', marginBottom: '16px', fontWeight: 'bold', fontSize: '14px', border: '1px solid var(--error)' }}>
+                 ⚠️ ESTA VENDA FOI ESTORNADA / CANCELADA<br/>
+                 <span style={{ fontWeight: 'normal', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                   Motivo: {selectedSale.motivoEstorno || 'Devolução de itens'}
+                 </span>
+               </div>
+            )}
+
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px', fontSize: '14px' }}>
               <div>
                 <p><strong>Cliente:</strong> {selectedSale.clienteNome}</p>
@@ -1042,8 +1101,17 @@ const Vendas = () => {
             <div className="thermal-ticket" id="thermal-print-area">
               <div className="thermal-ticket-header">
                 <h2>MERCADINHO UFRB</h2>
-                <p className="ticket-subtitle">COMPROVANTE DE VENDA</p>
-                <p className="ticket-non-fiscal">(CUPOM NÃO FISCAL)</p>
+                {printSaleTarget.estornada ? (
+                  <div style={{ border: '2px solid #ef4444', color: '#ef4444', padding: '6px', fontWeight: 'bold', fontSize: '13px', margin: '10px 0', textTransform: 'uppercase', lineHeight: '1.4' }}>
+                    * CUPOM ESTORNADO *<br/>
+                    VENDA CANCELADA
+                  </div>
+                ) : (
+                  <>
+                    <p className="ticket-subtitle">COMPROVANTE DE VENDA</p>
+                    <p className="ticket-non-fiscal">(CUPOM NÃO FISCAL)</p>
+                  </>
+                )}
               </div>
               
               <div className="ticket-divider">--------------------------------</div>
@@ -1127,6 +1195,72 @@ const Vendas = () => {
                 Fechar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showReturnModal && (
+        <div className="modal-overlay" style={{ zIndex: 700 }}>
+          <div className="modal-content" style={{ maxWidth: '400px', width: '90%' }}>
+            <h3 className="form-title">Confirmar Estorno / Devolução</h3>
+            
+            <form onSubmit={handleReturnSale}>
+              <div style={{ backgroundColor: 'var(--warning-light)', color: 'var(--warning)', padding: '12px', borderRadius: 'var(--border-radius-md)', marginBottom: '16px', fontSize: '13px', border: '1px solid var(--warning)' }}>
+                <strong>Atenção:</strong> Esta ação devolverá os produtos vendidos ao estoque e lançará um reembolso no caixa.
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Motivo do Estorno</label>
+                <select
+                  value={returnReason}
+                  onChange={(e) => setReturnReason(e.target.value)}
+                  className="form-select"
+                  required
+                >
+                  <option value="Cliente devolveu - produto vencido">Cliente devolveu - produto vencido</option>
+                  <option value="Cliente devolveu - produto danificado">Cliente devolveu - produto danificado</option>
+                  <option value="Cliente devolveu - desistência da compra">Cliente devolveu - desistência da compra</option>
+                  <option value="Erro de digitação/operador">Erro de digitação/operador</option>
+                  <option value="Outro motivo">Outro motivo</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Senha do Administrador</label>
+                <input
+                  type="password"
+                  value={returnPassword}
+                  onChange={(e) => setReturnPassword(e.target.value)}
+                  placeholder="Senha para autorização"
+                  className="form-input"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              {returnError && (
+                <div style={{ color: 'var(--error)', fontSize: '13px', marginTop: '8px', fontWeight: 'bold' }}>
+                  ❌ {returnError}
+                </div>
+              )}
+
+              <div className="modal-actions-btns">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setShowReturnModal(false);
+                    setReturnPassword('');
+                    setReturnReason('Cliente devolveu - produto vencido');
+                    setReturnError('');
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-danger">
+                  Confirmar Estorno
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
